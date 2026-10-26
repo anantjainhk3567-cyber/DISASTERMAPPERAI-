@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const CHROME_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const PORT = 9448;
+const PORT = 9451;
 const ARTIFACT_DIR = 'C:\\Users\\anant\\.gemini\\antigravity-ide\\brain\\e5e8dfd6-dd17-47bc-8f37-b9c98f2bb6d4';
 
 async function sleep(ms) {
@@ -243,7 +243,7 @@ async function main() {
       return false;
     })()
   `);
-  await sleep(5500);
+  await sleep(8000);
 
   const shot5 = path.join(ARTIFACT_DIR, 'screenshot_shimla_mountain_organic_zones.png');
   await client.captureScreenshot(shot5);
