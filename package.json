@@ -1,0 +1,15 @@
+{
+  "name": "disastermapper-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DisasterMapper AI root workspace orchestration scripts",
+  "scripts": {
+    "install": "npm --prefix disaster-mapper/backend install && npm --prefix disaster-mapper/frontend install",
+    "install:all": "npm --prefix disaster-mapper/backend install && npm --prefix disaster-mapper/frontend install",
+    "dev": "npm --prefix disaster-mapper/frontend run dev",
+    "dev:frontend": "npm --prefix disaster-mapper/frontend run dev",
+    "dev:backend": "npm --prefix disaster-mapper/backend run dev",
+    "build": "npm --prefix disaster-mapper/backend run build && npm --prefix disaster-mapper/frontend run build",
+    "test": "npm --prefix disaster-mapper/backend test"
+  }
+}

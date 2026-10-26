@@ -1,0 +1,171 @@
+{
+  "flood_segmentation": {
+    "input_shape": [
+      512,
+      512,
+      3
+    ],
+    "input_mean_rgb": [
+      101.24551010131836,
+      107.48486328125,
+      117.63934707641602
+    ],
+    "output_hectares": 2611.21,
+    "geojson_feature_count": 1,
+    "latency_ms": 1540.0,
+    "raw_architecture_reported": "U-Net with ResNet34 Skip-Connections"
+  },
+  "flood_susceptibility": {
+    "input_features": {
+      "rainfall_accum_24h_mm": 210.0,
+      "rainfall_intensity_mm_hr": 35.0,
+      "dem_elevation_m": 198.5,
+      "terrain_slope_deg": 1.2,
+      "distance_to_river_m": 85.0,
+      "drainage_density_km_per_sqkm": 3.4,
+      "soil_permeability_index": 0.28,
+      "land_cover_impervious_ratio": 0.72
+    },
+    "susceptibility_score": 0.9691,
+    "risk_category": null,
+    "top_contributing_factors": null,
+    "latency_ms": 5.86
+  },
+  "building_damage": {
+    "total_buildings_assessed": 1,
+    "damage_summary": {
+      "NO_DAMAGE": 0,
+      "MINOR_DAMAGE": 0,
+      "MAJOR_DAMAGE": 0,
+      "DESTROYED": 1
+    },
+    "coregistration": {
+      "aligned": true,
+      "pixel_shift": 1.2,
+      "status": "SUFFICIENT_KEYPOINTS_UNAVAILABLE"
+    },
+    "sample_building": {
+      "id": "bldg-det-1",
+      "damage_level": "DESTROYED",
+      "confidence": 0.724,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.224859375,
+              28.672840625000003
+            ],
+            [
+              77.225859375,
+              28.672840625000003
+            ],
+            [
+              77.225859375,
+              28.673840625
+            ],
+            [
+              77.224859375,
+              28.673840625
+            ],
+            [
+              77.224859375,
+              28.672840625000003
+            ]
+          ]
+        ]
+      },
+      "area_sqm": 24502.5,
+      "criticality": "RESIDENTIAL"
+    },
+    "latency_ms": 672.15
+  },
+  "road_segmentation": {
+    "total_segments_analyzed": 4,
+    "blocked_segments": 4,
+    "usable_segments": 0,
+    "sample_road": {
+      "id": "road-seg-1",
+      "name": "Grand Trunk Highway / NH-44",
+      "road_type": "PRIMARY",
+      "status": "BLOCKED",
+      "width_meters": 12.0,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            77.2145,
+            28.6842
+          ],
+          [
+            77.2245,
+            28.6742
+          ],
+          [
+            77.2345,
+            28.6642
+          ],
+          [
+            77.2445,
+            28.6542
+          ]
+        ]
+      },
+      "confidence": 0.89,
+      "routing_penalty_multiplier": 999.0,
+      "blockage_cause": "HIGH_WATER_INUNDATION",
+      "evidence_source": "SATELLITE_CORRIDOR_SEGMENTATION_V2"
+    },
+    "latency_ms": 365.49
+  },
+  "hazard_classification": {
+    "blue_image_predicted_class": null,
+    "blue_image_confidence": 0.383,
+    "blue_image_probabilities": null,
+    "red_image_predicted_class": null,
+    "red_image_confidence": 0.167,
+    "latency_ms": 102.7
+  },
+  "report_verification": {
+    "candidate_category": "FLOOD",
+    "verification_confidence": 0.72,
+    "recommended_status": "NEEDS_HUMAN_CONFIRMATION",
+    "corroborating_reports_count": 1,
+    "highest_semantic_similarity": null,
+    "latency_ms": 70.17
+  },
+  "temporal_forecast": {
+    "forecast_horizon_hours": 24,
+    "current_gauge_meters": 204.85,
+    "projected_peak_level": 205.14,
+    "projected_peak_hour": 24,
+    "breach_predicted": true,
+    "first_3_hours": [
+      {
+        "forecast_hour": 1,
+        "projected_stage_meters": 204.85,
+        "lower_bound_90pct": 204.78,
+        "upper_bound_90pct": 204.91,
+        "danger_threshold": 205.33,
+        "is_danger_breach": false
+      },
+      {
+        "forecast_hour": 2,
+        "projected_stage_meters": 204.87,
+        "lower_bound_90pct": 204.78,
+        "upper_bound_90pct": 204.96,
+        "danger_threshold": 205.33,
+        "is_danger_breach": false
+      },
+      {
+        "forecast_hour": 3,
+        "projected_stage_meters": 204.87,
+        "lower_bound_90pct": 204.76,
+        "upper_bound_90pct": 204.98,
+        "danger_threshold": 205.33,
+        "is_danger_breach": false
+      }
+    ],
+    "latency_ms": 28.1
+  }
+}

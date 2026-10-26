@@ -1,0 +1,582 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [postgis, vector, pgrouting]
+}
+
+enum UserRole {
+  ADMIN
+  ANALYST
+  RESPONDER
+  VIEWER
+  CITIZEN
+}
+
+enum OrganizationType {
+  GOVERNMENT
+  NGO
+  EMERGENCY_SERVICE
+  PRIVATE
+  RESEARCH
+}
+
+enum DisasterType {
+  EARTHQUAKE
+  FLOOD
+  CYCLONE
+  LANDSLIDE
+  WILDFIRE
+  OTHER
+}
+
+enum DisasterStatus {
+  ACTIVE
+  MONITORING
+  RESOLVED
+}
+
+enum ImageType {
+  SATELLITE
+  DRONE
+  AERIAL
+  BEFORE
+  AFTER
+}
+
+enum AnalysisStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum DetectionType {
+  DAMAGED_BUILDING
+  PARTIAL_BUILDING_DAMAGE
+  DESTROYED_BUILDING
+  BLOCKED_ROAD
+  DAMAGED_ROAD
+  USABLE_ROAD
+  FLOODED_AREA
+  ISOLATED_SETTLEMENT
+  DEBRIS
+  CRITICAL_INFRASTRUCTURE
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum DamageLevel {
+  NONE
+  MINOR
+  MODERATE
+  SEVERE
+  DESTROYED
+}
+
+enum BuildingCriticality {
+  NORMAL
+  SCHOOL
+  HOSPITAL
+  GOVERNMENT
+  SHELTER
+  OTHER
+}
+
+enum RoadType {
+  LOCAL
+  CITY
+  HIGHWAY
+  NATIONAL_HIGHWAY
+  SERVICE
+}
+
+enum RoadStatus {
+  USABLE
+  PARTIALLY_BLOCKED
+  BLOCKED
+  DAMAGED
+  UNKNOWN
+}
+
+enum PriorityLevel {
+  RED
+  ORANGE
+  GREEN
+}
+
+enum RouteStatus {
+  RECOMMENDED
+  ALTERNATIVE
+  UNSAFE
+  BLOCKED
+}
+
+model Organization {
+  id            String          @id @default(uuid())
+  name          String
+  type          OrganizationType
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  users         User[]
+  disasterEvents DisasterEvent[]
+  analysisJobs  AnalysisJob[]
+}
+
+model User {
+  id             String       @id @default(uuid())
+  name           String
+  email          String       @unique
+  passwordHash   String
+  role           UserRole     @default(VIEWER)
+  organizationId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  lastLoginAt    DateTime?
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  imageAssets    ImageAsset[]
+  auditLogs      AuditLog[]
+
+  @@index([email])
+  @@index([organizationId])
+}
+
+model DisasterEvent {
+  id               String         @id @default(uuid())
+  organizationId   String
+  name             String
+  type             DisasterType
+  status           DisasterStatus @default(ACTIVE)
+  severity         Severity       @default(MEDIUM)
+  description      String?
+  centerLatitude   Float
+  centerLongitude  Float
+  affectedArea     Json?
+  startedAt        DateTime
+  endedAt          DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  organization     Organization   @relation(fields: [organizationId], references: [id])
+  imageAssets      ImageAsset[]
+  analysisJobs     AnalysisJob[]
+  detections       Detection[]
+  buildingImpacts  BuildingImpact[]
+  roadSegments     RoadSegment[]
+  floodZones       FloodZone[]
+  settlementImpacts SettlementImpact[]
+  rescueZones      RescueZone[]
+  rescueRoutes     RescueRoute[]
+  aiExplanations   AIExplanation[]
+  citizenReports   CitizenReport[]
+  shelters         Shelter[]
+  criticalFacilities CriticalFacility[]
+  floodForecasts   FloodForecast[]
+  simulationScenarios SimulationScenario[]
+  predictionEvaluations PredictionEvaluation[]
+  alertNotifications AlertNotification[]
+  timelineEvents   TimelineEvent[]
+
+  @@index([organizationId])
+  @@index([status])
+}
+
+model ImageAsset {
+  id              String       @id @default(uuid())
+  disasterEventId String
+  uploadedBy      String
+  type            ImageType
+  source          String?
+  fileUrl         String
+  thumbnailUrl    String?
+  metadata        Json?
+  captureTime     DateTime?
+  latitude        Float?
+  longitude       Float?
+  boundingBox     Json?
+  createdAt       DateTime     @default(now())
+
+  disasterEvent   DisasterEvent @relation(fields: [disasterEventId], references: [id])
+  uploader        User          @relation(fields: [uploadedBy], references: [id])
+  analysisJobs    AnalysisJob[]
+
+  @@index([disasterEventId])
+}
+
+model AnalysisJob {
+  id              String         @id @default(uuid())
+  disasterEventId String
+  imageId         String
+  organizationId  String
+  status          AnalysisStatus @default(QUEUED)
+  progress        Int            @default(0)
+  startedAt       DateTime?
+  completedAt     DateTime?
+  errorMessage    String?
+  modelVersion    String?
+  createdAt       DateTime       @default(now())
+
+  disasterEvent   DisasterEvent  @relation(fields: [disasterEventId], references: [id])
+  image           ImageAsset     @relation(fields: [imageId], references: [id])
+  organization    Organization   @relation(fields: [organizationId], references: [id])
+  detections      Detection[]
+  aiExplanations  AIExplanation[]
+
+  @@index([disasterEventId])
+  @@index([status])
+}
+
+model Detection {
+  id                String       @id @default(uuid())
+  analysisJobId     String
+  disasterEventId   String
+  type              DetectionType
+  confidence        Float
+  severity          Severity
+  geometry          Json
+  centroidLatitude  Float
+  centroidLongitude Float
+  properties        Json?
+  createdAt         DateTime     @default(now())
+
+  analysisJob       AnalysisJob   @relation(fields: [analysisJobId], references: [id])
+  disasterEvent     DisasterEvent @relation(fields: [disasterEventId], references: [id])
+  buildingImpact    BuildingImpact?
+  roadSegment       RoadSegment?
+
+  @@index([disasterEventId])
+  @@index([analysisJobId])
+  @@index([type])
+  @@index([severity])
+}
+
+model BuildingImpact {
+  id                 String             @id @default(uuid())
+  disasterEventId    String
+  detectionId        String?            @unique
+  buildingReference  String?
+  damageLevel        DamageLevel
+  confidence         Float
+  geometry           Json
+  estimatedOccupants Int?
+  criticality        BuildingCriticality @default(NORMAL)
+  createdAt          DateTime           @default(now())
+
+  disasterEvent      DisasterEvent      @relation(fields: [disasterEventId], references: [id])
+  detection          Detection?         @relation(fields: [detectionId], references: [id])
+
+  @@index([disasterEventId])
+}
+
+model RoadSegment {
+  id                  String       @id @default(uuid())
+  disasterEventId     String
+  detectionId         String?      @unique
+  externalRoadId      String?
+  name                String?
+  roadType            RoadType     @default(LOCAL)
+  geometry            Json
+  status              RoadStatus   @default(UNKNOWN)
+  confidence          Float        @default(0)
+  width               Float?
+  accessibilityScore  Float        @default(0)
+  createdAt           DateTime     @default(now())
+
+  disasterEvent       DisasterEvent @relation(fields: [disasterEventId], references: [id])
+  detection           Detection?    @relation(fields: [detectionId], references: [id])
+  nearestSettlements  SettlementImpact[] @relation("NearestRoad")
+
+  @@index([disasterEventId])
+}
+
+model FloodZone {
+  id              String       @id @default(uuid())
+  disasterEventId String
+  geometry        Json
+  confidence      Float
+  severity        Severity
+  estimatedArea   Float?
+  estimatedDepth  Float?
+  createdAt       DateTime     @default(now())
+
+  disasterEvent   DisasterEvent @relation(fields: [disasterEventId], references: [id])
+
+  @@index([disasterEventId])
+}
+
+model SettlementImpact {
+  id                    String       @id @default(uuid())
+  disasterEventId       String
+  geometry              Json
+  estimatedPopulation   Int?
+  affectedPopulation    Int?
+  isolationScore        Float        @default(0)
+  nearestUsableRoadId   String?
+  distanceToUsableRoad  Float?
+  severity              Severity     @default(MEDIUM)
+  createdAt             DateTime     @default(now())
+
+  disasterEvent         DisasterEvent @relation(fields: [disasterEventId], references: [id])
+  nearestUsableRoad     RoadSegment?  @relation("NearestRoad", fields: [nearestUsableRoadId], references: [id])
+
+  @@index([disasterEventId])
+}
+
+model RescueZone {
+  id                 String       @id @default(uuid())
+  disasterEventId    String
+  geometry           Json
+  priorityScore      Float
+  priorityLevel      PriorityLevel
+  affectedPopulation Int          @default(0)
+  damagedBuildings   Int          @default(0)
+  blockedRoads       Int          @default(0)
+  accessibilityScore Float        @default(0)
+  isolationScore     Float        @default(0)
+  riskScore          Float        @default(0)
+  recommendedAction  String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  disasterEvent      DisasterEvent @relation(fields: [disasterEventId], references: [id])
+  aiExplanations     AIExplanation[]
+  rescueRoutes       RescueRoute[]
+
+  @@index([disasterEventId])
+}
+
+model RescueRoute {
+  id                   String       @id @default(uuid())
+  disasterEventId      String
+  rescueZoneId         String?
+  origin               Json
+  destination          Json
+  geometry             Json?
+  distanceMeters       Float?
+  estimatedTimeSeconds Int?
+  safetyScore          Float        @default(0)
+  accessibilityScore   Float        @default(0)
+  blockedSegments      Json?
+  status               RouteStatus  @default(RECOMMENDED)
+  createdAt            DateTime     @default(now())
+
+  disasterEvent        DisasterEvent @relation(fields: [disasterEventId], references: [id])
+  rescueZone           RescueZone?   @relation(fields: [rescueZoneId], references: [id])
+}
+
+model AIExplanation {
+  id                String       @id @default(uuid())
+  disasterEventId   String
+  analysisJobId     String?
+  rescueZoneId      String?
+  summary           String
+  reasoning         Json
+  recommendedAction String?
+  confidence        Float
+  generatedAt       DateTime
+  modelVersion      String?
+
+  disasterEvent     DisasterEvent @relation(fields: [disasterEventId], references: [id])
+  analysisJob       AnalysisJob?  @relation(fields: [analysisJobId], references: [id])
+  rescueZone        RescueZone?   @relation(fields: [rescueZoneId], references: [id])
+}
+
+model AuditLog {
+  id             String       @id @default(uuid())
+  userId         String?
+  organizationId String?
+  action         String
+  resource       String
+  resourceId     String?
+  metadata       Json?
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime     @default(now())
+
+  user           User?        @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([organizationId])
+  @@index([createdAt])
+}
+
+model CitizenReport {
+  id                 String       @id @default(uuid())
+  disasterEventId    String?
+  reporterName       String?
+  reporterContact    String?
+  category           String       // FLOODING, ROAD_BLOCK, STRUCTURAL_COLLAPSE, MEDICAL_EMERGENCY, FIRE, HAZARD
+  severity           Severity     @default(MEDIUM)
+  description        String
+  latitude           Float
+  longitude          Float
+  locationName       String?
+  mediaUrl           String?
+  status             String       @default("SUBMITTED") // SUBMITTED, PENDING_REVIEW, CORROBORATED, VERIFIED, REJECTED, RESOLVED
+  verifiedBy         String?
+  verifiedAt         DateTime?
+  corroborationCount Int          @default(0)
+  rejectionReason    String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  disasterEvent      DisasterEvent? @relation(fields: [disasterEventId], references: [id])
+
+  @@index([disasterEventId])
+  @@index([status])
+  @@index([category])
+}
+
+model Shelter {
+  id                   String       @id @default(uuid())
+  disasterEventId      String?
+  name                 String
+  address              String?
+  latitude             Float
+  longitude            Float
+  totalCapacity        Int
+  currentOccupancy     Int          @default(0)
+  status               String       @default("OPEN") // OPEN, FULL, CLOSED, DAMAGED
+  isAccessible         Boolean      @default(true)
+  hasMedicalFacilities Boolean      @default(false)
+  hasFoodSupplies      Boolean      @default(true)
+  contactPhone         String?
+  managerName          String?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  disasterEvent        DisasterEvent? @relation(fields: [disasterEventId], references: [id])
+
+  @@index([disasterEventId])
+  @@index([status])
+}
+
+model CriticalFacility {
+  id                    String        @id @default(uuid())
+  disasterEventId       String?
+  name                  String
+  type                  String        // HOSPITAL, SCHOOL, FIRE_STATION, POLICE_STATION, BRIDGE, POWER_STATION, WATER_TREATMENT
+  latitude              Float
+  longitude             Float
+  status                String        @default("OPERATIONAL") // OPERATIONAL, COMPROMISED, DESTROYED, ISOLATED
+  capacity              Int?
+  backupPower           Boolean       @default(true)
+  structuralDamageLevel DamageLevel   @default(NONE)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  disasterEvent         DisasterEvent? @relation(fields: [disasterEventId], references: [id])
+
+  @@index([disasterEventId])
+  @@index([type])
+  @@index([status])
+}
+
+model FloodForecast {
+  id                    String        @id @default(uuid())
+  disasterEventId       String
+  modelName             String
+  forecastHorizonHours  Int
+  predictedRainfallMm   Float
+  estimatedFloodAreaKm2 Float
+  exposedPopulation     Int
+  riskPolygons          Json
+  drainageBottlenecks   Json?
+  affectedRoadCount     Int           @default(0)
+  confidence            Float         @default(0.85)
+  methodology           String
+  isExperimental        Boolean       @default(true)
+  generatedAt           DateTime      @default(now())
+
+  disasterEvent         DisasterEvent @relation(fields: [disasterEventId], references: [id])
+
+  @@index([disasterEventId])
+}
+
+model SimulationScenario {
+  id                      String        @id @default(uuid())
+  disasterEventId         String
+  scenarioName            String
+  rainfallAmountMm        Float
+  durationHours           Float
+  intensityMultiplier     Float         @default(1.0)
+  drainageCapacityPercent Float         @default(100.0)
+  estimatedFloodAreaKm2   Float
+  potentiallyAffectedRoads Int
+  exposedPopulation       Int
+  estimatedShelterDemand  Int
+  criticalFacilitiesAtRisk Int
+  resultGeoJson           Json
+  createdAt               DateTime      @default(now())
+
+  disasterEvent           DisasterEvent @relation(fields: [disasterEventId], references: [id])
+
+  @@index([disasterEventId])
+}
+
+model PredictionEvaluation {
+  id                    String        @id @default(uuid())
+  disasterEventId       String
+  modelName             String
+  targetDate            DateTime
+  iouScore              Float
+  precision             Float
+  recall                Float
+  f1Score               Float
+  truePositiveAreaKm2   Float
+  falsePositiveAreaKm2  Float
+  falseNegativeAreaKm2  Float
+  evaluationGeoJson     Json?
+  notes                 String?
+  evaluatedAt           DateTime      @default(now())
+
+  disasterEvent         DisasterEvent @relation(fields: [disasterEventId], references: [id])
+
+  @@index([disasterEventId])
+}
+
+model AlertNotification {
+  id              String        @id @default(uuid())
+  disasterEventId String?
+  title           String
+  message         String
+  severity        Severity
+  type            String        // DISASTER_UPDATE, ROAD_CLOSURE, FLOOD_SURGE, CITIZEN_REPORT, AI_ANALYSIS_COMPLETE, SHELTER_CAPACITY
+  isAcknowledged  Boolean       @default(false)
+  acknowledgedBy  String?
+  acknowledgedAt  DateTime?
+  createdAt       DateTime      @default(now())
+
+  disasterEvent   DisasterEvent? @relation(fields: [disasterEventId], references: [id])
+
+  @@index([disasterEventId])
+  @@index([severity])
+  @@index([isAcknowledged])
+}
+
+model TimelineEvent {
+  id              String        @id @default(uuid())
+  disasterEventId String
+  timestamp       DateTime
+  title           String
+  description     String
+  eventType       String        // INITIAL_WARNING, DISASTER_ONSET, WATER_PEAK, ROAD_COLLAPSE, RESCUE_OPERATION, SHELTER_OPENED, RECEDING
+  snapshotData    Json?
+  createdAt       DateTime      @default(now())
+
+  disasterEvent   DisasterEvent @relation(fields: [disasterEventId], references: [id])
+
+  @@index([disasterEventId])
+  @@index([timestamp])
+}

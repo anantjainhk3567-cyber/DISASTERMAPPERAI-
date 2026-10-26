@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-10-16T18:32:43Z",
+  "tests": {
+    "segformer_b0": {
+      "status": "PASSED",
+      "sha256": "70718b8b7c7c724f01879903c6b2ed242128d721cd64aaa57ffd1f592434877b",
+      "dry_scene_ha": 18.885,
+      "flood_scene_ha": 1817.475,
+      "delta_ha": 1798.59,
+      "mean_prob_dry": 0.4431,
+      "mean_prob_flood": 0.4498
+    },
+    "xgboost": {
+      "status": "PASSED",
+      "sha256": "ba809a8da7ec7d44989fc43a5e6d5a0c2f1b5f417d49a6a56b4db151cf843053",
+      "arid_score": 0.0169,
+      "arid_category": "LOW_SUSCEPTIBILITY",
+      "deluge_score": 0.999,
+      "deluge_category": "CRITICAL_SUSCEPTIBILITY",
+      "score_delta": 0.9821
+    },
+    "road_unet": {
+      "status": "PASSED",
+      "sha256": "6178a040acbedc0c62a8acd4826fea504070ddcbac52aa96aaf220a1bae943bd",
+      "blank_field_prob": 0.5003,
+      "highway_core_prob": 0.5016
+    },
+    "efficientnet": {
+      "status": "PASSED",
+      "sha256": "89f7663961489178a85d4599a6f54ded5814de3a6a9d25b04573bfcd8f972219",
+      "fire_probs": {
+        "cyclone": 0.182,
+        "earthquake": 0.242,
+        "flood": 0.216,
+        "wildfire": 0.36
+      },
+      "water_probs": {
+        "cyclone": 0.191,
+        "earthquake": 0.25,
+        "flood": 0.207,
+        "wildfire": 0.352
+      }
+    },
+    "minilm": {
+      "status": "PASSED",
+      "flood_report_category": "FLOOD",
+      "flood_report_confidence": 0.6,
+      "sunny_category": "GENERAL_EMERGENCY",
+      "unrelated_category": "GENERAL_EMERGENCY"
+    }
+  }
+}

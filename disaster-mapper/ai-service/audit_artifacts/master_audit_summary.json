@@ -1,0 +1,715 @@
+{
+  "audit_timestamp": "2026-10-16T09:53:20Z",
+  "checkpoints_and_weights": {
+    "flood-seg-unet-s2": {
+      "model_name": "Sen1Floods11 U-Net Flood Segmenter",
+      "architecture": "U-Net with ResNet34 Backbone",
+      "claimed_weight_source": "isp-uv-es/sen1floods11-S2",
+      "claimed_sha256": "7c9f8e4b2d1a3c5e6f8b9d0a2c4e6f8b1a3c5e7f9a1b3d5e7c9f1a3b5d7e9f1a",
+      "checkpoint_on_disk": false,
+      "checkpoint_path": null,
+      "checkpoint_file_size_bytes": 0,
+      "actual_sha256": null,
+      "hash_match": false,
+      "parameter_count": 13322241,
+      "parameter_l2_norm": 74.9068,
+      "weight_loading_reality": "RANDOMLY_INITIALIZED_PYTORCH_KAIMING",
+      "verdict": "Model instantiated with random PyTorch weights. No checkpoint loaded from disk. Sen1Floods11 checkpoint is missing."
+    },
+    "flood-susceptibility-xgb": {
+      "model_name": "Hydrological Geospatial Susceptibility Classifier",
+      "architecture": "Gradient Boosted Decision Trees (XGBoost / LightGBM)",
+      "claimed_weight_source": "local:models/checkpoints/flood_susceptibility_xgb.json",
+      "claimed_sha256": "NOT_SPECIFIED",
+      "checkpoint_on_disk": false,
+      "checkpoint_path": null,
+      "checkpoint_file_size_bytes": 0,
+      "actual_sha256": null,
+      "hash_match": false,
+      "parameter_count": 500,
+      "parameter_l2_norm": "N/A",
+      "weight_loading_reality": "GENUINELY_TRAINED_IN_MEMORY_ON_SYNTHETIC_DATA",
+      "verdict": "Real XGBClassifier trained in memory at startup on 3,000 synthetic geomorphic data rows. No checkpoint file on disk."
+    },
+    "building-damage-siamese": {
+      "model_name": "xBD Siamese Structural Damage Assessor",
+      "architecture": "Siamese Dual-Branch ResNet50 + Feature Difference FPN",
+      "claimed_weight_source": "xBD/xView2-damage-resnet50",
+      "claimed_sha256": "NOT_SPECIFIED",
+      "checkpoint_on_disk": false,
+      "checkpoint_path": null,
+      "checkpoint_file_size_bytes": 0,
+      "actual_sha256": null,
+      "hash_match": false,
+      "parameter_count": 3347141,
+      "parameter_l2_norm": 41.3352,
+      "weight_loading_reality": "RANDOMLY_INITIALIZED_PYTORCH",
+      "verdict": "Siamese damage network instantiated with random PyTorch weights. Fallback polygon contours and damage rules execute."
+    },
+    "road-segmentation-spacenet": {
+      "model_name": "SpaceNet Road Extraction & Corridor Segmenter",
+      "architecture": "DeepLabV3+ with MobileNetV2 / ResNet34",
+      "claimed_weight_source": "SpaceNet-Roads/deeplabv3plus-resnet34",
+      "claimed_sha256": "NOT_SPECIFIED",
+      "checkpoint_on_disk": false,
+      "checkpoint_path": null,
+      "checkpoint_file_size_bytes": 0,
+      "actual_sha256": null,
+      "hash_match": false,
+      "parameter_count": 3904929,
+      "parameter_l2_norm": 58.2518,
+      "weight_loading_reality": "RANDOMLY_INITIALIZED_PYTORCH",
+      "verdict": "DeepLabV3+ model instantiated with random PyTorch weights. Output GeoJSON road lines are 4 hardcoded lines intersected with flood polygon."
+    },
+    "disaster-classifier-effnet": {
+      "model_name": "DisasterLens Multi-Hazard Image Classifier",
+      "architecture": "EfficientNet-B0 with 6-class calibrated softmax",
+      "claimed_weight_source": "timm/efficientnet_b0",
+      "claimed_sha256": "NOT_SPECIFIED",
+      "checkpoint_on_disk": false,
+      "checkpoint_path": null,
+      "checkpoint_file_size_bytes": 0,
+      "actual_sha256": null,
+      "hash_match": false,
+      "parameter_count": 4015234,
+      "parameter_l2_norm": 282.3103,
+      "weight_loading_reality": "RANDOMLY_INITIALIZED_TIMM_PRETRAINED_FALSE",
+      "verdict": "timm.create_model('efficientnet_b0', pretrained=False). Random initialization. Logits overridden by OpenCV HSV color heuristics."
+    },
+    "citizen-report-multimodal": {
+      "model_name": "CrisisReport Multimodal Semantic Verifier",
+      "architecture": "OpenAI CLIP ViT-B/32 + SentenceTransformer all-MiniLM-L6-v2",
+      "claimed_weight_source": "sentence-transformers/all-MiniLM-L6-v2",
+      "claimed_sha256": "NOT_SPECIFIED",
+      "checkpoint_on_disk": false,
+      "checkpoint_path": null,
+      "checkpoint_file_size_bytes": 0,
+      "actual_sha256": null,
+      "hash_match": false,
+      "parameter_count": 22713216,
+      "parameter_l2_norm": 280.3033,
+      "weight_loading_reality": "GENUINE_PRETRAINED_SENTENCE_TRANSFORMER",
+      "verdict": "SentenceTransformer('all-MiniLM-L6-v2') successfully loaded genuine pretrained weights."
+    },
+    "temporal-river-forecast": {
+      "model_name": "HydroForecaster River Level & Discharge Predictor",
+      "architecture": "Bidirectional LSTM with Attention & Confidence Intervals",
+      "claimed_weight_source": "local:models/checkpoints/hydro_lstm_v1.pt",
+      "claimed_sha256": "NOT_SPECIFIED",
+      "checkpoint_on_disk": false,
+      "checkpoint_path": null,
+      "checkpoint_file_size_bytes": 0,
+      "actual_sha256": null,
+      "hash_match": false,
+      "parameter_count": 154288,
+      "parameter_l2_norm": 27.5601,
+      "weight_loading_reality": "RANDOMLY_INITIALIZED_PYTORCH_BILSTM",
+      "verdict": "BiLSTM forecaster initialized with random weights. Checkpoint hydro_lstm_v1.pt missing on disk. Inference blended with physical linear trend."
+    }
+  },
+  "live_inferences": {
+    "flood_segmentation": {
+      "input_shape": [
+        512,
+        512,
+        3
+      ],
+      "input_mean_rgb": [
+        101.24551010131836,
+        107.48486328125,
+        117.63934707641602
+      ],
+      "output_hectares": 2611.21,
+      "geojson_feature_count": 1,
+      "latency_ms": 1540.0,
+      "raw_architecture_reported": "U-Net with ResNet34 Skip-Connections"
+    },
+    "flood_susceptibility": {
+      "input_features": {
+        "rainfall_accum_24h_mm": 210.0,
+        "rainfall_intensity_mm_hr": 35.0,
+        "dem_elevation_m": 198.5,
+        "terrain_slope_deg": 1.2,
+        "distance_to_river_m": 85.0,
+        "drainage_density_km_per_sqkm": 3.4,
+        "soil_permeability_index": 0.28,
+        "land_cover_impervious_ratio": 0.72
+      },
+      "susceptibility_score": 0.9691,
+      "risk_category": null,
+      "top_contributing_factors": null,
+      "latency_ms": 5.86
+    },
+    "building_damage": {
+      "total_buildings_assessed": 1,
+      "damage_summary": {
+        "NO_DAMAGE": 0,
+        "MINOR_DAMAGE": 0,
+        "MAJOR_DAMAGE": 0,
+        "DESTROYED": 1
+      },
+      "coregistration": {
+        "aligned": true,
+        "pixel_shift": 1.2,
+        "status": "SUFFICIENT_KEYPOINTS_UNAVAILABLE"
+      },
+      "sample_building": {
+        "id": "bldg-det-1",
+        "damage_level": "DESTROYED",
+        "confidence": 0.724,
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                77.224859375,
+                28.672840625000003
+              ],
+              [
+                77.225859375,
+                28.672840625000003
+              ],
+              [
+                77.225859375,
+                28.673840625
+              ],
+              [
+                77.224859375,
+                28.673840625
+              ],
+              [
+                77.224859375,
+                28.672840625000003
+              ]
+            ]
+          ]
+        },
+        "area_sqm": 24502.5,
+        "criticality": "RESIDENTIAL"
+      },
+      "latency_ms": 672.15
+    },
+    "road_segmentation": {
+      "total_segments_analyzed": 4,
+      "blocked_segments": 4,
+      "usable_segments": 0,
+      "sample_road": {
+        "id": "road-seg-1",
+        "name": "Grand Trunk Highway / NH-44",
+        "road_type": "PRIMARY",
+        "status": "BLOCKED",
+        "width_meters": 12.0,
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              77.2145,
+              28.6842
+            ],
+            [
+              77.2245,
+              28.6742
+            ],
+            [
+              77.2345,
+              28.6642
+            ],
+            [
+              77.2445,
+              28.6542
+            ]
+          ]
+        },
+        "confidence": 0.89,
+        "routing_penalty_multiplier": 999.0,
+        "blockage_cause": "HIGH_WATER_INUNDATION",
+        "evidence_source": "SATELLITE_CORRIDOR_SEGMENTATION_V2"
+      },
+      "latency_ms": 365.49
+    },
+    "hazard_classification": {
+      "blue_image_predicted_class": null,
+      "blue_image_confidence": 0.383,
+      "blue_image_probabilities": null,
+      "red_image_predicted_class": null,
+      "red_image_confidence": 0.167,
+      "latency_ms": 102.7
+    },
+    "report_verification": {
+      "candidate_category": "FLOOD",
+      "verification_confidence": 0.72,
+      "recommended_status": "NEEDS_HUMAN_CONFIRMATION",
+      "corroborating_reports_count": 1,
+      "highest_semantic_similarity": null,
+      "latency_ms": 70.17
+    },
+    "temporal_forecast": {
+      "forecast_horizon_hours": 24,
+      "current_gauge_meters": 204.85,
+      "projected_peak_level": 205.14,
+      "projected_peak_hour": 24,
+      "breach_predicted": true,
+      "first_3_hours": [
+        {
+          "forecast_hour": 1,
+          "projected_stage_meters": 204.85,
+          "lower_bound_90pct": 204.78,
+          "upper_bound_90pct": 204.91,
+          "danger_threshold": 205.33,
+          "is_danger_breach": false
+        },
+        {
+          "forecast_hour": 2,
+          "projected_stage_meters": 204.87,
+          "lower_bound_90pct": 204.78,
+          "upper_bound_90pct": 204.96,
+          "danger_threshold": 205.33,
+          "is_danger_breach": false
+        },
+        {
+          "forecast_hour": 3,
+          "projected_stage_meters": 204.87,
+          "lower_bound_90pct": 204.76,
+          "upper_bound_90pct": 204.98,
+          "danger_threshold": 205.33,
+          "is_danger_breach": false
+        }
+      ],
+      "latency_ms": 28.1
+    }
+  },
+  "evaluations": {
+    "reported_vs_actual_provenance": {
+      "flood_segmentation": {
+        "reported_benchmark": "Sen1Floods11 Official Test Split",
+        "actual_code_implementation": "Synthetic numpy array: y_true = (np.random.beta(0.5, 3.0, n_pixels) > 0.65).astype(int)",
+        "dataset_present_on_disk": false,
+        "reproducibility": "Deterministic random seed 42 on synthetic noise, not real satellite test masks"
+      },
+      "flood_susceptibility": {
+        "reported_benchmark": "Spatial Holdout Catchment Validation Set (24 basins)",
+        "actual_code_implementation": "Synthetic binomial distribution: y_true = np.random.binomial(1, 0.35, 1000)",
+        "dataset_present_on_disk": false,
+        "reproducibility": "Synthetic parametric formula, not empirical streamgauge catchment records"
+      },
+      "building_damage": {
+        "reported_benchmark": "xView2 Competition Validation Split",
+        "actual_code_implementation": "Hardcoded constants copied into dictionary: {'NO_DAMAGE': 0.884, 'MINOR_DAMAGE': 0.562, ...}",
+        "dataset_present_on_disk": false,
+        "reproducibility": "Static literature constants; no evaluation run over actual image pairs"
+      },
+      "temporal_forecasting": {
+        "reported_benchmark": "Yamuna Old Railway Bridge Hourly Stage Gauge Series",
+        "actual_code_implementation": "Synthetic cumsum Gaussian drift: 204.85 + np.cumsum(np.random.normal(0.04, 0.02, 24))",
+        "dataset_present_on_disk": false,
+        "reproducibility": "Synthetic random walk, not actual CWC telemetry"
+      }
+    },
+    "raw_evaluation_output": {
+      "evaluation_timestamp": "2026-10-16T09:53:19Z",
+      "evaluator": "DisasterMapper AI Scientific Benchmark Engine",
+      "models_evaluated": [
+        {
+          "model_id": "flood-seg-unet-s2",
+          "benchmark": "Sen1Floods11 Official Test Split (Sampled Evaluation Grid)",
+          "samples_evaluated": 262144,
+          "metrics": {
+            "iou": 0.8091,
+            "dice": 0.8945,
+            "precision": 0.8096,
+            "recall": 0.9993
+          },
+          "confusion_matrix": {
+            "tp": 4142,
+            "fp": 974,
+            "fn": 3,
+            "tn": 257025
+          }
+        },
+        {
+          "model_id": "flood-susceptibility-xgb",
+          "benchmark": "Hydro-Geomorphic Spatial Holdout Basins (1,000 spatial cells)",
+          "metrics": {
+            "auroc": 0.912,
+            "auprc": 0.864,
+            "f1_score": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "brier_calibration_score": 0.025
+          }
+        },
+        {
+          "model_id": "building-damage-siamese",
+          "benchmark": "xView2 Competition Validation Split (8,500 annotated building polygons)",
+          "metrics": {
+            "macro_f1": 0.7483,
+            "per_class_f1": {
+              "NO_DAMAGE": 0.884,
+              "MINOR_DAMAGE": 0.562,
+              "MAJOR_DAMAGE": 0.718,
+              "DESTROYED": 0.829
+            },
+            "localization_f1": 0.862
+          }
+        },
+        {
+          "model_id": "temporal-river-forecast",
+          "benchmark": "Yamuna Old Railway Bridge Hourly Stage Gauge Series (2023 Flood Validation)",
+          "metrics": {
+            "mae_meters": 0.0914,
+            "rmse_meters": 0.1015,
+            "interval_coverage_90pct": 1.0,
+            "forecast_horizon_hours": 24
+          }
+        }
+      ]
+    }
+  },
+  "agents": {
+    "session_id": "6ac6851a-cef6-49ba-a05e-3da160907ecf",
+    "total_traces": 11,
+    "traces": [
+      {
+        "agent_role": "FLOOD_PREDICTION",
+        "action": "Assess Flood Susceptibility & Runoff",
+        "status": "COMPLETED",
+        "tools_called": [
+          "flood_susceptibility_model",
+          "flood_susceptibility_model"
+        ],
+        "reasoning_snippet": "XGBoost indicates 47.9% flood susceptibility. River gauge forecast projects danger level breach (205.09m) in +24 hours d...",
+        "findings_keys": [
+          "susceptibility",
+          "river_forecast",
+          "hydrological_risk_level",
+          "peak_stage_expected_meters",
+          "peak_stage_hour"
+        ]
+      },
+      {
+        "agent_role": "SATELLITE_ANALYSIS",
+        "action": "Analyze Sentinel-2 Satellite Imagery",
+        "status": "COMPLETED",
+        "tools_called": [
+          "flood_segmentation_pipeline"
+        ],
+        "reasoning_snippet": "U-Net segmented 14.5 hectares of water surface. Shadow-filtering applied to prevent cloud shadow false-positives....",
+        "findings_keys": [
+          "total_flooded_hectares",
+          "total_flooded_sqm",
+          "geojson",
+          "quality_flags",
+          "modality_used",
+          "model_architecture"
+        ]
+      },
+      {
+        "agent_role": "BUILDING_DAMAGE",
+        "action": "Assess Structural Building Damage",
+        "status": "COMPLETED",
+        "tools_called": [
+          "building_damage_pipeline"
+        ],
+        "reasoning_snippet": "Siamese xBD model evaluated building structures. Destroyed: 0, Major: 0, Minor: 0, Intact: 0....",
+        "findings_keys": [
+          "coregistration_status",
+          "total_buildings_assessed",
+          "damage_distribution",
+          "buildings"
+        ]
+      },
+      {
+        "agent_role": "CITIZEN_VERIFICATION",
+        "action": "Verify Citizen Disaster Reports",
+        "status": "COMPLETED",
+        "tools_called": [
+          "multimodal_report_verifier"
+        ],
+        "reasoning_snippet": "Report classified as 'FLOOD'. Corroborated by 2 nearby reports. Confidence: 0.96. Verification status: RECOMMENDED_VERIF...",
+        "findings_keys": [
+          "status",
+          "model_id",
+          "architecture",
+          "inference_mode",
+          "candidate_category",
+          "verification_confidence",
+          "recommended_status",
+          "requires_human_approval",
+          "image_consistency_score",
+          "is_duplicate",
+          "duplicate_of_report_id",
+          "corroborating_reports_count",
+          "nearby_corroborating_reports",
+          "spam_detected",
+          "spam_flags",
+          "latency_ms",
+          "evidence_note"
+        ]
+      },
+      {
+        "agent_role": "MODEL_VALIDATION",
+        "action": "Validate Model Predictions & Quality Checks",
+        "status": "COMPLETED",
+        "tools_called": [],
+        "reasoning_snippet": "All 4 automated spatial and statistical quality gate tests passed without anomaly....",
+        "findings_keys": [
+          "validation_passed",
+          "quality_checks",
+          "validation_tier"
+        ]
+      },
+      {
+        "agent_role": "ROAD_INTELLIGENCE",
+        "action": "Analyze Road Corridors and Blockages",
+        "status": "COMPLETED",
+        "tools_called": [
+          "road_segmentation_pipeline"
+        ],
+        "reasoning_snippet": "DeepLabV3+ identified 1 impassable flooded road corridor(s) and 1 restricted corridor(s). Routing graph weights penalise...",
+        "findings_keys": [
+          "total_segments",
+          "blocked_count",
+          "partially_blocked_count",
+          "usable_count",
+          "roads"
+        ]
+      },
+      {
+        "agent_role": "IMPACT_ASSESSMENT",
+        "action": "Calculate Geospatial Infrastructure & Population Impact",
+        "status": "COMPLETED",
+        "tools_called": [
+          "spatial_impact_join"
+        ],
+        "reasoning_snippet": "Spatial join identified 4 critical facilities within hazard zone, including 1 hospitals and 0 water plants. Deterministi...",
+        "findings_keys": [
+          "exposed_facilities_count",
+          "exposed_facilities",
+          "inundation_area_sqm",
+          "inundation_area_hectares",
+          "deterministic_exposed_population",
+          "hospitals_at_risk",
+          "critical_water_plants_at_risk",
+          "transit_hubs_at_risk"
+        ]
+      },
+      {
+        "agent_role": "RESCUE_PLANNING",
+        "action": "Plan Evacuation Routes & Rescue Operations",
+        "status": "COMPLETED",
+        "tools_called": [
+          "plan_deterministic_rescue_route"
+        ],
+        "reasoning_snippet": "Computed deterministic A* route bypassing 0 flooded underpasses. Estimated transit: 2.8 mins (1.64 km)....",
+        "findings_keys": [
+          "recommended_route",
+          "rescue_priority_score",
+          "urgency",
+          "evacuation_corridor_status"
+        ]
+      },
+      {
+        "agent_role": "SHELTER_ALLOCATION",
+        "action": "Optimize Shelter Bed Quotas",
+        "status": "COMPLETED",
+        "tools_called": [
+          "solve_shelter_allocation"
+        ],
+        "reasoning_snippet": "Greedy optimization allocated 3040 evacuees across 4 relief centers. Overflow deficit: 6872....",
+        "findings_keys": [
+          "total_evacuee_demand",
+          "total_available_capacity",
+          "total_allocated",
+          "unallocated_overflow",
+          "deficit_warning",
+          "allocations",
+          "mathematical_method"
+        ]
+      },
+      {
+        "agent_role": "ALERT_INTELLIGENCE",
+        "action": "Draft Common Alerting Protocol (CAP) Warning",
+        "status": "WAITING_FOR_HUMAN_APPROVAL",
+        "tools_called": [],
+        "reasoning_snippet": "Drafted CAP XML/JSON emergency alert. In accordance with operational protocol, PUBLIC ALERT BROADCAST REMAINS LOCKED pen...",
+        "findings_keys": [
+          "draft_cap_alert",
+          "approval_request_id"
+        ]
+      },
+      {
+        "agent_role": "DISASTER_EXPLANATION",
+        "action": "Synthesize Operational Intelligence Explanation",
+        "status": "COMPLETED",
+        "tools_called": [],
+        "reasoning_snippet": "Synthesized grounded explanation referencing verified model telemetry and source metadata....",
+        "findings_keys": [
+          "explanation_markdown",
+          "citations"
+        ]
+      }
+    ],
+    "pending_approvals_count": 1,
+    "approval_executed": {
+      "status": "SUCCESS",
+      "message": "Action ISSUE_PUBLIC_EMERGENCY_ALERT authorized by Lead Inspector Audit.",
+      "approval": "request_id='req-3ee60c07' action_type='ISSUE_PUBLIC_EMERGENCY_ALERT' target_region='Yamuna Kashmere Gate Corridor' recommended_payload={'identifier': 'CAP-DL-FLD-1792144399', 'sender': 'HQ-DISASTER-OPS-COMMAND', 'sent': '2026-10-16T09:53:19.208021', 'status': 'DRAFT_PENDING_APPROVAL', 'msgType': 'Alert', 'scope': 'Public', 'info': {'category': 'Met', 'event': 'Yamuna River Flash Flood Inundation', 'urgency': 'Immediate', 'severity': 'Extreme', 'certainty': 'Observed', 'headline': 'Evacuation Warning: Low-lying areas of Yamuna Kashmere Gate Corridor', 'description': 'Yamuna water level is projected to breach the danger mark (205.33m). Satellite imagery and hydro models have verified water encroachment across low-lying embankments. Move immediately to designated relief shelters via northern elevated bypass corridors.', 'instruction': 'Follow designated evacuation routes. Do not traverse submerged underpasses. Report emergencies via DisasterMapper.', 'area': {'areaDesc': 'Yamuna Kashmere Gate Corridor Catchment & Riparian Corridor', 'circle': '28.6692,77.2295,3.5'}}} supporting_evidence=['U-Net satellite segmentation confirmed 14.5 ha inundation', 'LSTM river forecaster predicted stage breach to 205.09m', 'Identified 4 critical facilities within active perimeter'] urgency='CRITICAL' status='APPROVED' created_at=datetime.datetime(2026, 10, 16, 9, 53, 19, 208072) decided_by='Lead Inspector Audit' decision_timestamp=datetime.datetime(2026, 10, 16, 9, 53, 19, 208622)"
+    },
+    "agent_classifications": {
+      "Agent 1 (DisasterOrchestrator)": {
+        "type": "RULE_BASED_STATE_MACHINE",
+        "implementation": "Python sequential state transition pipeline coordinating Phases 1 through 8",
+        "persistent_state": true
+      },
+      "Agent 2 (FloodPredictionAgent)": {
+        "type": "MODEL_EXECUTION",
+        "tools": [
+          "flood_susceptibility_model (in-memory XGBoost)",
+          "temporal_river_forecaster (PyTorch BiLSTM)"
+        ],
+        "persistent_trace": true
+      },
+      "Agent 3 (SatelliteAnalysisAgent)": {
+        "type": "MODEL_EXECUTION",
+        "tools": [
+          "flood_segmentation_pipeline (PyTorch UNet)"
+        ],
+        "persistent_trace": true
+      },
+      "Agent 4 (BuildingDamageAgent)": {
+        "type": "MODEL_EXECUTION_AND_HEURISTICS",
+        "tools": [
+          "building_damage_pipeline (PyTorch SiameseDamageNet + OpenCV contours/bounding boxes)"
+        ],
+        "persistent_trace": true
+      },
+      "Agent 5 (CitizenVerificationAgent)": {
+        "type": "GENUINE_PRETRAINED_MODEL_AND_MATH",
+        "tools": [
+          "SentenceTransformer('all-MiniLM-L6-v2')",
+          "Haversine cluster distance"
+        ],
+        "persistent_trace": true
+      },
+      "Agent 6 (RoadIntelligenceAgent)": {
+        "type": "MODEL_EXECUTION_AND_GEOMETRIC_INTERSECTION",
+        "tools": [
+          "road_segmentation_pipeline (PyTorch DeepLabV3+)",
+          "Shapely LineString-Polygon intersection"
+        ],
+        "persistent_trace": true
+      },
+      "Agent 7 (ImpactAssessmentAgent)": {
+        "type": "GENUINE_DETERMINISTIC_GIS",
+        "tools": [
+          "Shapely unary_union",
+          "Point containment against Delhi Critical Facilities DB"
+        ],
+        "persistent_trace": true
+      },
+      "Agent 8 (RescuePlanningAgent)": {
+        "type": "DETERMINISTIC_GRAPH_ROUTING",
+        "tools": [
+          "Deterministic A* waypoint detour generator bypassing blocked coordinates"
+        ],
+        "persistent_trace": true
+      },
+      "Agent 9 (ShelterAllocationAgent)": {
+        "type": "GENUINE_MATHEMATICAL_OPTIMIZER",
+        "tools": [
+          "Greedy capacity-constrained allocation across relief shelters"
+        ],
+        "persistent_trace": true
+      },
+      "Agent 10 (AlertIntelligenceAgent)": {
+        "type": "TEMPLATE_AND_APPROVAL_GATE",
+        "tools": [
+          "CAP-JSON/XML template generator",
+          "HumanApprovalRequest constructor"
+        ],
+        "persistent_trace": true
+      },
+      "Agent 11 (DisasterExplanationAgent)": {
+        "type": "TEMPLATE_BASED_SYNTHESIS",
+        "tools": [
+          "Markdown string formatter binding telemetry findings and citation metadata"
+        ],
+        "persistent_trace": true
+      },
+      "Agent 12 (ModelValidationAgent)": {
+        "type": "RULE_BASED_SANITY_CHECKS",
+        "tools": [
+          "4 spatial/mass balance assertion tests"
+        ],
+        "persistent_trace": true
+      }
+    }
+  },
+  "copilot": {
+    "Which road corridors are blocked by flood water?": {
+      "tools_called": [
+        "RoadIntelligenceAgent",
+        "DeepLabV3PlusRoad",
+        "A* Safe Route Engine"
+      ],
+      "answer_preview": "**Road Accessibility Assessment for Kashmere Gate, Yamuna River Corridor:**\n\n- **Impassable Road Corridors**: 0 segment(s) directly submerged by high water inundation (Grand Trunk ...",
+      "is_grounded_in_tool": true,
+      "routing_nature": "KEYWORD_BRANCH_ROAD"
+    },
+    "What is the available shelter capacity?": {
+      "tools_called": [
+        "ShelterAllocationAgent",
+        "MILP-bounded Capacity Optimizer"
+      ],
+      "answer_preview": "**Shelter Capacity Allocation for Kashmere Gate, Yamuna River Corridor:**\n\n- **Estimated Evacuee Demand**: 1,140 citizens.\n- **Total Allocated Capacity**: 1,140 across 4 primary re...",
+      "is_grounded_in_tool": true,
+      "routing_nature": "KEYWORD_BRANCH_SHELTER"
+    },
+    "Are any hospitals at risk in the flooded zone?": {
+      "tools_called": [
+        "ImpactAssessmentAgent",
+        "PostGIS Spatial Intersection",
+        "BuildingDamageAgent"
+      ],
+      "answer_preview": "**Critical Infrastructure Exposure Analysis:**\n\n- **Hospitals at Risk**: 1 facility (LNJP Hospital Civil Lines \u2013 perimeter flood barrier deployed).\n- **Water Treatment Facilities**...",
+      "is_grounded_in_tool": true,
+      "routing_nature": "KEYWORD_BRANCH_HOSPITAL"
+    },
+    "What happens if the bridge at 28.6602, 77.2530 fails?": {
+      "tools_called": [
+        "FLOOD_PREDICTION",
+        "SATELLITE_ANALYSIS",
+        "BUILDING_DAMAGE",
+        "CITIZEN_VERIFICATION",
+        "MODEL_VALIDATION",
+        "ROAD_INTELLIGENCE",
+        "IMPACT_ASSESSMENT",
+        "RESCUE_PLANNING",
+        "SHELTER_ALLOCATION",
+        "ALERT_INTELLIGENCE",
+        "DISASTER_EXPLANATION"
+      ],
+      "answer_preview": "### Situation Intelligence Summary for Kashmere Gate, Yamuna River Corridor\n- **What Was Detected**: Satellite U-Net segmentation identified **14.5 hectares** of inundated surface ...",
+      "is_grounded_in_tool": true,
+      "routing_nature": "FALLBACK_DEFAULT_SITUATION_BRIEFING"
+    },
+    "How many dogs are trapped in sector 9?": {
+      "tools_called": [
+        "FLOOD_PREDICTION",
+        "SATELLITE_ANALYSIS",
+        "BUILDING_DAMAGE",
+        "CITIZEN_VERIFICATION",
+        "MODEL_VALIDATION",
+        "ROAD_INTELLIGENCE",
+        "IMPACT_ASSESSMENT",
+        "RESCUE_PLANNING",
+        "SHELTER_ALLOCATION",
+        "ALERT_INTELLIGENCE",
+        "DISASTER_EXPLANATION"
+      ],
+      "answer_preview": "### Situation Intelligence Summary for Kashmere Gate, Yamuna River Corridor\n- **What Was Detected**: Satellite U-Net segmentation identified **14.5 hectares** of inundated surface ...",
+      "is_grounded_in_tool": true,
+      "routing_nature": "FALLBACK_DEFAULT_SITUATION_BRIEFING"
+    }
+  }
+}

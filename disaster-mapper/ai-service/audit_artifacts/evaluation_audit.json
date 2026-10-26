@@ -1,0 +1,87 @@
+{
+  "reported_vs_actual_provenance": {
+    "flood_segmentation": {
+      "reported_benchmark": "Sen1Floods11 Official Test Split",
+      "actual_code_implementation": "Synthetic numpy array: y_true = (np.random.beta(0.5, 3.0, n_pixels) > 0.65).astype(int)",
+      "dataset_present_on_disk": false,
+      "reproducibility": "Deterministic random seed 42 on synthetic noise, not real satellite test masks"
+    },
+    "flood_susceptibility": {
+      "reported_benchmark": "Spatial Holdout Catchment Validation Set (24 basins)",
+      "actual_code_implementation": "Synthetic binomial distribution: y_true = np.random.binomial(1, 0.35, 1000)",
+      "dataset_present_on_disk": false,
+      "reproducibility": "Synthetic parametric formula, not empirical streamgauge catchment records"
+    },
+    "building_damage": {
+      "reported_benchmark": "xView2 Competition Validation Split",
+      "actual_code_implementation": "Hardcoded constants copied into dictionary: {'NO_DAMAGE': 0.884, 'MINOR_DAMAGE': 0.562, ...}",
+      "dataset_present_on_disk": false,
+      "reproducibility": "Static literature constants; no evaluation run over actual image pairs"
+    },
+    "temporal_forecasting": {
+      "reported_benchmark": "Yamuna Old Railway Bridge Hourly Stage Gauge Series",
+      "actual_code_implementation": "Synthetic cumsum Gaussian drift: 204.85 + np.cumsum(np.random.normal(0.04, 0.02, 24))",
+      "dataset_present_on_disk": false,
+      "reproducibility": "Synthetic random walk, not actual CWC telemetry"
+    }
+  },
+  "raw_evaluation_output": {
+    "evaluation_timestamp": "2026-10-16T09:53:19Z",
+    "evaluator": "DisasterMapper AI Scientific Benchmark Engine",
+    "models_evaluated": [
+      {
+        "model_id": "flood-seg-unet-s2",
+        "benchmark": "Sen1Floods11 Official Test Split (Sampled Evaluation Grid)",
+        "samples_evaluated": 262144,
+        "metrics": {
+          "iou": 0.8091,
+          "dice": 0.8945,
+          "precision": 0.8096,
+          "recall": 0.9993
+        },
+        "confusion_matrix": {
+          "tp": 4142,
+          "fp": 974,
+          "fn": 3,
+          "tn": 257025
+        }
+      },
+      {
+        "model_id": "flood-susceptibility-xgb",
+        "benchmark": "Hydro-Geomorphic Spatial Holdout Basins (1,000 spatial cells)",
+        "metrics": {
+          "auroc": 0.912,
+          "auprc": 0.864,
+          "f1_score": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "brier_calibration_score": 0.025
+        }
+      },
+      {
+        "model_id": "building-damage-siamese",
+        "benchmark": "xView2 Competition Validation Split (8,500 annotated building polygons)",
+        "metrics": {
+          "macro_f1": 0.7483,
+          "per_class_f1": {
+            "NO_DAMAGE": 0.884,
+            "MINOR_DAMAGE": 0.562,
+            "MAJOR_DAMAGE": 0.718,
+            "DESTROYED": 0.829
+          },
+          "localization_f1": 0.862
+        }
+      },
+      {
+        "model_id": "temporal-river-forecast",
+        "benchmark": "Yamuna Old Railway Bridge Hourly Stage Gauge Series (2023 Flood Validation)",
+        "metrics": {
+          "mae_meters": 0.0914,
+          "rmse_meters": 0.1015,
+          "interval_coverage_90pct": 1.0,
+          "forecast_horizon_hours": 24
+        }
+      }
+    ]
+  }
+}

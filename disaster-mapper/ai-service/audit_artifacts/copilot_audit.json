@@ -1,0 +1,67 @@
+{
+  "Which road corridors are blocked by flood water?": {
+    "tools_called": [
+      "RoadIntelligenceAgent",
+      "DeepLabV3PlusRoad",
+      "A* Safe Route Engine"
+    ],
+    "answer_preview": "**Road Accessibility Assessment for Kashmere Gate, Yamuna River Corridor:**\n\n- **Impassable Road Corridors**: 0 segment(s) directly submerged by high water inundation (Grand Trunk ...",
+    "is_grounded_in_tool": true,
+    "routing_nature": "KEYWORD_BRANCH_ROAD"
+  },
+  "What is the available shelter capacity?": {
+    "tools_called": [
+      "ShelterAllocationAgent",
+      "MILP-bounded Capacity Optimizer"
+    ],
+    "answer_preview": "**Shelter Capacity Allocation for Kashmere Gate, Yamuna River Corridor:**\n\n- **Estimated Evacuee Demand**: 1,140 citizens.\n- **Total Allocated Capacity**: 1,140 across 4 primary re...",
+    "is_grounded_in_tool": true,
+    "routing_nature": "KEYWORD_BRANCH_SHELTER"
+  },
+  "Are any hospitals at risk in the flooded zone?": {
+    "tools_called": [
+      "ImpactAssessmentAgent",
+      "PostGIS Spatial Intersection",
+      "BuildingDamageAgent"
+    ],
+    "answer_preview": "**Critical Infrastructure Exposure Analysis:**\n\n- **Hospitals at Risk**: 1 facility (LNJP Hospital Civil Lines \u2013 perimeter flood barrier deployed).\n- **Water Treatment Facilities**...",
+    "is_grounded_in_tool": true,
+    "routing_nature": "KEYWORD_BRANCH_HOSPITAL"
+  },
+  "What happens if the bridge at 28.6602, 77.2530 fails?": {
+    "tools_called": [
+      "FLOOD_PREDICTION",
+      "SATELLITE_ANALYSIS",
+      "BUILDING_DAMAGE",
+      "CITIZEN_VERIFICATION",
+      "MODEL_VALIDATION",
+      "ROAD_INTELLIGENCE",
+      "IMPACT_ASSESSMENT",
+      "RESCUE_PLANNING",
+      "SHELTER_ALLOCATION",
+      "ALERT_INTELLIGENCE",
+      "DISASTER_EXPLANATION"
+    ],
+    "answer_preview": "### Situation Intelligence Summary for Kashmere Gate, Yamuna River Corridor\n- **What Was Detected**: Satellite U-Net segmentation identified **14.5 hectares** of inundated surface ...",
+    "is_grounded_in_tool": true,
+    "routing_nature": "FALLBACK_DEFAULT_SITUATION_BRIEFING"
+  },
+  "How many dogs are trapped in sector 9?": {
+    "tools_called": [
+      "FLOOD_PREDICTION",
+      "SATELLITE_ANALYSIS",
+      "BUILDING_DAMAGE",
+      "CITIZEN_VERIFICATION",
+      "MODEL_VALIDATION",
+      "ROAD_INTELLIGENCE",
+      "IMPACT_ASSESSMENT",
+      "RESCUE_PLANNING",
+      "SHELTER_ALLOCATION",
+      "ALERT_INTELLIGENCE",
+      "DISASTER_EXPLANATION"
+    ],
+    "answer_preview": "### Situation Intelligence Summary for Kashmere Gate, Yamuna River Corridor\n- **What Was Detected**: Satellite U-Net segmentation identified **14.5 hectares** of inundated surface ...",
+    "is_grounded_in_tool": true,
+    "routing_nature": "FALLBACK_DEFAULT_SITUATION_BRIEFING"
+  }
+}
